@@ -4,11 +4,12 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="App1.Views.LoginPage"
+             x:Class="App1.Views.StartPage"
              Shell.NavBarIsVisible="False">
     <ContentPage.Content>
-        <StackLayout Padding="10,0,10,0" VerticalOptions="Center">
-            <Button VerticalOptions="Center" Text="Login" Command="{Binding LoginCommand}"/>
+        <StackLayout Padding="10,0,10,0" Spacing="100">
+            <Label x:Name="gameName" Text="Tag Game" FontSize="42" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,225,0,10"/>
+            <Button Text="Start game" VerticalOptions="End" Command="{Binding StartGameCommand}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
