@@ -1,14 +1,27 @@
-﻿using App1.Views;
+﻿using App1.Database;
+using App1.Interfaces;
+using App1.Services;
+using App1.Views;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using Xamarin.Forms;
 
 namespace App1.ViewModels
 {
     public class StartViewModel : BaseViewModel
     {
-        public Command StartGameCommand { get; }
+        private ApplicationContext _context;
+
+        public string Login { get; set; }
+        public string Password { get; set; }
+        public bool IsIncorrect { get; set; } = false;
+
+        public ICommand StartGameCommand { get; }
 
         public StartViewModel()
         {
@@ -17,8 +30,34 @@ namespace App1.ViewModels
 
         private async void OnStartGameClicked(object obj)
         {
-            // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
-            await Shell.Current.GoToAsync($"{nameof(FirstGameMenuPage)}");
+            if (AuthenticateUser().Result)
+            {
+                MainDataStore.Username = Login;
+                await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
+            }
+            else
+            {
+                ShowIncorrectDataError();
+            }
+        }
+
+        private async Task<bool> AuthenticateUser()
+        {
+            string dbPath = DependencyService.Get<IPath>().GetDatabasePath(App.DBFILENAME);
+            using (var db = new ApplicationContext(dbPath))
+            {
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Username.Equals(Login) && u.Password.Equals(Password));
+                if (user is null)
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        private void ShowIncorrectDataError()
+        {
+            IsIncorrect = true;
         }
     }
 }

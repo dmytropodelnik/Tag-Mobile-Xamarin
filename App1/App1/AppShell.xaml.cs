@@ -12,6 +12,8 @@ namespace App1
         {
             InitializeComponent();
             Routing.RegisterRoute(nameof(FirstGameMenuPage), typeof(FirstGameMenuPage));
+            Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
+            Routing.RegisterRoute(nameof(GamePage), typeof(GamePage));
             Routing.RegisterRoute(nameof(AboutPage), typeof(AboutPage));
         }
 

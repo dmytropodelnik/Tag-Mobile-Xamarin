@@ -12,7 +12,8 @@ namespace App1.Models
         [Column("Id")]  // Можно было не указывать потому, что так было бы по умолчанию, благодаря соглашению о наименованиях EF
         [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string Username { get; set; }
+
+        public int Steps { get; set; }
 
         public int UserId { get; set; }
         [ForeignKey("UserId")]

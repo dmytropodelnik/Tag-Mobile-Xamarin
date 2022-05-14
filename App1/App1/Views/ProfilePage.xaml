@@ -8,10 +8,30 @@
     </ContentPage.BindingContext>-->
 
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
+        <StackLayout HorizontalOptions="Center" VerticalOptions="Start">
+            <Label Text="Welcome to your profile!"
                 VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+                HorizontalOptions="CenterAndExpand" >
+                <Label.FormattedText>
+                    <FormattedString>
+                        <FormattedString.Spans>
+                            <Span Text="Welcome to your profile, "/>
+                            <Span Text="{Binding Username}" FontAttributes="Bold"/>
+                        </FormattedString.Spans>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+            <Label x:Name="changeLoginLabel" Text="New login" />
+            <Entry x:Name="changeLogin" Text="{Binding NewLogin}" />
+
+            <Label x:Name="changeLoginLabel" Text="New password" />
+            <Entry x:Name="changeLogin" Text="{Binding NewPassword}" />
+
+            <Label x:Name="changeLoginLabel" Text="Confirm new password" />
+            <Entry x:Name="changeLogin" Text="{Binding ConfirmNewPassword}" />
+
+            <Button Text="Save" VerticalOptions="End" Command="{Binding SaveNewDataCommand}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
