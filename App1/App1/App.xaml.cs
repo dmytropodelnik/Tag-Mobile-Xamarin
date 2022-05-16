@@ -25,8 +25,8 @@ namespace App1
                 db.Database.EnsureCreated();
                 if (db.Users.Count() == 0)
                 {
-                    db.Users.Add(new User { Username = "Tom", Password = "123", });
-                    db.Users.Add(new User { Username = "Alice", Password = "123", });
+                    db.Users.Add(new User { Username = "Admin", Password = "123", });
+                    db.Users.Add(new User { Username = "User", Password = "123", });
                     db.SaveChanges();
                 }
             }

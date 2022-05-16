@@ -6,18 +6,20 @@
              xmlns:viewmodels="clr-namespace:App1.ViewModels" x:DataType="viewmodels:StartViewModel"
              mc:Ignorable="d"
              x:Class="App1.Views.StartPage"
-             Shell.NavBarIsVisible="False">
-    <ContentPage.Content>
-        <StackLayout Padding="10,0,10,0" Spacing="100">
-            <Label x:Name="gameName" Text="Tag Game" FontSize="42" HorizontalOptions="Center" VerticalOptions="Start" Margin="0,225,0,10"/>
+             Shell.NavBarIsVisible="False"
+             >
+    <ContentPage.Content >
+        <StackLayout Padding="0,20,0,0" Orientation="Vertical" HorizontalOptions="Center" WidthRequest="300">
+            <Label x:Name="gameName" Text="Tag Game" FontSize="42" HorizontalOptions="Center" Margin="0, 20, 0, 180" />
 
-            <Label x:Name="loginErrorText" Text="Incorrect login or password" IsVisible="{Binding IsIncorrect}" />
+            <Label x:Name="loginErrorText" Text="Incorrect login or password" TextColor="Red"
+                   IsVisible="{Binding IsIncorrect, Mode=TwoWay}" />
 
             <Label x:Name="loginLabel" Text="Login" />
             <Entry x:Name="loginEntry" Text="{Binding Login}" />
 
             <Label x:Name="passwordLabel" Text="Password" />
-            <Entry x:Name="passwordEntry" IsPassword="True" Text="{Binding Password} "/>
+            <Entry x:Name="passwordEntry" IsPassword="True" Text="{Binding Password} " Margin="0, 0, 0, 10" />
 
             <Button Text="Start game" VerticalOptions="End" Command="{Binding StartGameCommand}"/>
         </StackLayout>

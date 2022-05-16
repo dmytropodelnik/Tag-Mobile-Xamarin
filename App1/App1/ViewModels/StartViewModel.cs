@@ -5,7 +5,9 @@ using App1.Views;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -15,11 +17,18 @@ namespace App1.ViewModels
 {
     public class StartViewModel : BaseViewModel
     {
-        private ApplicationContext _context;
+        private bool _isIncorrect;
 
         public string Login { get; set; }
         public string Password { get; set; }
-        public bool IsIncorrect { get; set; } = false;
+        public bool IsIncorrect 
+        {
+            get => _isIncorrect;
+            set {
+                _isIncorrect = value;
+                OnPropertyChanged(nameof(IsIncorrect)); 
+            }
+        }
 
         public ICommand StartGameCommand { get; }
 
@@ -44,13 +53,14 @@ namespace App1.ViewModels
         private async Task<bool> AuthenticateUser()
         {
             string dbPath = DependencyService.Get<IPath>().GetDatabasePath(App.DBFILENAME);
-            using (var db = new ApplicationContext(dbPath))
+            using (var context = new ApplicationContext(dbPath))
             {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Username.Equals(Login) && u.Password.Equals(Password));
+                var user = await context.Users.FirstOrDefaultAsync(u => u.Username.Equals(Login) && u.Password.Equals(Password));
                 if (user is null)
                 {
                     return false;
                 }
+                IsIncorrect = false;
                 return true;
             }
         }

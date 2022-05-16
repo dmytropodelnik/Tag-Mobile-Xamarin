@@ -4,11 +4,12 @@
              x:Class="App1.Views.FirstGameMenuPage"
              Title="{Binding Title}">
 
-    <StackLayout Spacing="0" Padding="30" Orientation="Vertical" VerticalOptions="Start" HorizontalOptions="Center">
-        <Label Text="Best result: " FontSize="Large" TextColor="Black" HorizontalOptions="Center" Margin="20, 0, 150, 0"/>
+    <StackLayout Orientation="Vertical" VerticalOptions="Start" HorizontalOptions="Center" WidthRequest="350">
+        <Label Text="Best result: " FontSize="Large" TextColor="Black" HorizontalOptions="Center" Margin="0, 25, 0, 0" />
+        <Label Text="None" FontSize="Large"  FontAttributes="Bold"  TextColor="Black" HorizontalOptions="Center" />
 
-        <Label Text="Rules:" FontSize="Large"  HorizontalOptions="Center" TextColor="Black" />
-        <Label Text="{Binding Rules}" FontSize="Medium" Padding="5" />
+        <Label Text="Rules:" FontSize="Large" HorizontalOptions="Center" TextColor="Black" Margin="0, 130, 0, 0" />
+        <Label Text="{Binding Rules}" FontSize="Medium" Padding="10" Margin="0, 0, 0, 70" />
         <Button Text="Start" VerticalOptions="End" />
     </StackLayout>
     

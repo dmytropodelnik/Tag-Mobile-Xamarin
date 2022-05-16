@@ -12,8 +12,6 @@ namespace App1.ViewModels
 {
     public class ProfileViewModel : BaseViewModel
     {
-        private ApplicationContext _context;
-
         public string Username { get; set; }
         public string NewLogin { get; set; }
         public string NewPassword { get; set; }
@@ -49,9 +47,9 @@ namespace App1.ViewModels
         private async Task<bool> SaveToDatabase()
         {
             string dbPath = DependencyService.Get<IPath>().GetDatabasePath(App.DBFILENAME);
-            using (var db = new ApplicationContext(dbPath))
+            using (var context = new ApplicationContext(dbPath))
             {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Username.Equals(Username));
+                var user = await context.Users.FirstOrDefaultAsync(u => u.Username.Equals(Username));
                 if (user is null)
                 {
                     return false;
@@ -66,8 +64,8 @@ namespace App1.ViewModels
                     user.Password = NewPassword;
                 }
 
-                _context.Users.Update(user);
-                await _context.SaveChangesAsync();
+                context.Users.Update(user);
+                await context.SaveChangesAsync();
 
                 return true;
             }
