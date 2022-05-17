@@ -61,10 +61,7 @@ namespace App1.ViewModels
 
         private async void OnStartGameClicked(object obj)
         {
-            // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
-            //await Shell.Current.GoToAsync($"//{nameof(FirstGameMenuPage)}");
             await Shell.Current.GoToAsync($"//{nameof(GamePage)}");
-
         }
 
         public string Rules

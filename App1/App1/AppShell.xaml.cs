@@ -16,16 +16,9 @@ namespace App1
             Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
             Routing.RegisterRoute(nameof(GamePage), typeof(GamePage));
             Routing.RegisterRoute(nameof(AboutPage), typeof(AboutPage));
-
-            //GoToLogin();
         }
 
         private async void OnMenuItemClicked(object sender, EventArgs e)
-        {
-            await Shell.Current.GoToAsync("//StartPage");
-        }
-
-        private async void GoToLogin()
         {
             await Shell.Current.GoToAsync("//StartPage");
         }

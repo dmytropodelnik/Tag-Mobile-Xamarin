@@ -18,19 +18,6 @@ namespace App1
         {
             InitializeComponent();
 
-            string dbPath = DependencyService.Get<IPath>().GetDatabasePath(DBFILENAME);
-            using (var db = new ApplicationContext(dbPath))
-            {
-                // Создаем бд, если она отсутствует
-                db.Database.EnsureCreated();
-                if (db.Users.Count() == 0)
-                {
-                    db.Users.Add(new User { Username = "Admin", Password = "123", });
-                    db.Users.Add(new User { Username = "User", Password = "123", });
-                    db.SaveChanges();
-                }
-            }
-
             DependencyService.Register<MockDataStore>();
             MainPage = new AppShell();
         }

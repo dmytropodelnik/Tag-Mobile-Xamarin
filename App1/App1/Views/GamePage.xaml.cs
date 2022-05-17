@@ -16,7 +16,7 @@ namespace App1.Views
         public GamePage()
         {
             InitializeComponent();
-            BindingContext = new GameViewModel();
+            BindingContext = new GameViewModel(playField);
         }
     }
 }
