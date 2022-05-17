@@ -11,13 +11,21 @@ namespace App1
         public AppShell()
         {
             InitializeComponent();
+            Routing.RegisterRoute(nameof(StartPage), typeof(StartPage));
             Routing.RegisterRoute(nameof(FirstGameMenuPage), typeof(FirstGameMenuPage));
             Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
             Routing.RegisterRoute(nameof(GamePage), typeof(GamePage));
             Routing.RegisterRoute(nameof(AboutPage), typeof(AboutPage));
+
+            //GoToLogin();
         }
 
         private async void OnMenuItemClicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync("//StartPage");
+        }
+
+        private async void GoToLogin()
         {
             await Shell.Current.GoToAsync("//StartPage");
         }

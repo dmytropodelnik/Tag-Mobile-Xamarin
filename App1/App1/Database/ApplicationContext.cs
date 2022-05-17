@@ -15,6 +15,15 @@ namespace App1.Database
         public ApplicationContext(string databasePath)
         {
             _databasePath = databasePath;
+
+            //// if database already exists then delete it
+            //if (Database.CanConnect())
+            //{
+            //    Database.EnsureDeleted();
+            //}
+
+            //// create database
+            //Database.EnsureCreated();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

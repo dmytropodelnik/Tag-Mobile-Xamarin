@@ -1,5 +1,6 @@
 ﻿using App1.Database;
 using App1.Interfaces;
+using App1.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,15 +13,53 @@ namespace App1.ViewModels
 {
     public class ProfileViewModel : BaseViewModel
     {
-        public string Username { get; set; }
-        public string NewLogin { get; set; }
-        public string NewPassword { get; set; }
-        public string ConfirmNewPassword { get; set; }
+        private string _profileName;
+        private string _newLogin;
+        private string _newPassword;
+        private string _confirmPassword;
+
+        public string Username
+        {
+            get => _profileName;
+            set
+            {
+                _profileName = value;
+                OnPropertyChanged(nameof(Username));
+            }
+        }
+        public string NewLogin
+        {
+            get => _newLogin;
+            set
+            {
+                _newLogin = value;
+                OnPropertyChanged(nameof(NewLogin));
+            }
+        }
+        public string NewPassword
+        {
+            get => _newPassword;
+            set
+            {
+                _newPassword = value;
+                OnPropertyChanged(nameof(NewPassword));
+            }
+        }
+        public string ConfirmNewPassword
+        {
+            get => _confirmPassword;
+            set
+            {
+                _confirmPassword = value;
+                OnPropertyChanged(nameof(ConfirmNewPassword));
+            }
+        }
 
         public ICommand SaveNewDataCommand { get; }
 
         public ProfileViewModel()
         {
+            Username = MainDataStore.Username;
             SaveNewDataCommand = new Command(SaveUserData);
         }
 
@@ -42,6 +81,7 @@ namespace App1.ViewModels
             }
 
             await SaveToDatabase();
+            ClearEntries();
         }
 
         private async Task<bool> SaveToDatabase()
@@ -58,6 +98,7 @@ namespace App1.ViewModels
                 if (!string.IsNullOrWhiteSpace(NewLogin))
                 {
                     user.Username = NewLogin;
+                    Username = NewLogin;
                 }
                 if (!string.IsNullOrWhiteSpace(NewPassword))
                 {
@@ -69,6 +110,13 @@ namespace App1.ViewModels
 
                 return true;
             }
+        }
+
+        private void ClearEntries()
+        {
+            NewLogin = "";
+            NewPassword = "";
+            ConfirmNewPassword = "";
         }
 
     }

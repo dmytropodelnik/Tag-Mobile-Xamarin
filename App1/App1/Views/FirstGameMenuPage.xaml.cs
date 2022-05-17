@@ -14,13 +14,15 @@ namespace App1.Views
             InitializeComponent();
             BindingContext = new FirstGameMenuViewModel();
         }
-        protected override void OnAppearing()
+        protected async override void OnAppearing()
         {
-            string dbPath = DependencyService.Get<IPath>().GetDatabasePath(App.DBFILENAME);
-            using (ApplicationContext db = new ApplicationContext(dbPath))
-            {
-                //friendsList.ItemsSource = db.Users.ToList();
-            }
+            //string dbPath = DependencyService.Get<IPath>().GetDatabasePath(App.DBFILENAME);
+            //using (ApplicationContext db = new ApplicationContext(dbPath))
+            //{
+            //    //friendsList.ItemsSource = db.Users.ToList();
+            //}
+            await Shell.Current.GoToAsync("//StartPage");
+
             base.OnAppearing();
         }
     }

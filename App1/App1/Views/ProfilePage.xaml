@@ -1,14 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                          xmlns:vm="clr-namespace:App1.ViewModels"
+
              x:Class="App1.Views.ProfilePage"
              >
-    <!--<ContentPage.BindingContext>
+
+    <ContentPage.BindingContext>
         <vm:ProfileViewModel />
-    </ContentPage.BindingContext>-->
+    </ContentPage.BindingContext>
 
     <ContentPage.Content>
-        <StackLayout HorizontalOptions="Center" VerticalOptions="Start" Margin="0, 20, 0, 0">
+        <StackLayout HorizontalOptions="Center" VerticalOptions="Start" Margin="0, 20, 0, 0" WidthRequest="300">
             <Label Margin="0 ,0, 0, 110"
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" >
@@ -16,20 +19,20 @@
                     <FormattedString>
                         <FormattedString.Spans>
                             <Span Text="Welcome to your profile, " FontSize="Medium" />
-                            <Span Text="{Binding Username}" FontAttributes="Bold"/>
+                            <Span Text="{Binding Username, Mode=TwoWay}" FontAttributes="Bold"/>
                         </FormattedString.Spans>
                     </FormattedString>
                 </Label.FormattedText>
             </Label>
 
             <Label x:Name="changeLoginLabel" Text="New login" />
-            <Entry x:Name="changeLogin" Text="{Binding NewLogin}" />
+            <Entry x:Name="changeLogin" Text="{Binding NewLogin, Mode=TwoWay}" />
 
             <Label x:Name="changePasswordLabel" Text="New password" />
-            <Entry x:Name="changePassword" Text="{Binding NewPassword}" IsPassword="True" />
+            <Entry x:Name="changePassword" Text="{Binding NewPassword, Mode=TwoWay}" IsPassword="True" />
 
             <Label x:Name="confirmPasswordLabel" Text="Confirm new password" />
-            <Entry x:Name="confirmLogin" Text="{Binding ConfirmNewPassword}" IsPassword="True" Margin="0, 0, 0, 10" />
+            <Entry x:Name="confirmLogin" Text="{Binding ConfirmNewPassword, Mode=TwoWay}" IsPassword="True" Margin="0, 0, 0, 10" />
 
             <Button Text="Save" VerticalOptions="End" Command="{Binding SaveNewDataCommand}"/>
         </StackLayout>
