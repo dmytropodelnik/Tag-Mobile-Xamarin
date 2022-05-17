@@ -16,7 +16,14 @@ namespace App1.Views
         public GamePage()
         {
             InitializeComponent();
-            BindingContext = new GameViewModel(playField);
+            BindingContext = GameViewModel.Create(playField);
+        }
+
+        protected override void OnAppearing()
+        {
+            GameViewModel.Create(playField);
+
+            base.OnAppearing();
         }
     }
 }

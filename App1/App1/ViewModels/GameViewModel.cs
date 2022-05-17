@@ -3,7 +3,9 @@ using App1.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -12,21 +14,38 @@ namespace App1.ViewModels
 {
     public class GameViewModel : BaseViewModel
     {
-        private CubeInfo[,] _cubesInfo = new CubeInfo[4, 4];
+        private static GameViewModel _instance;
 
-        private string _currentScore = "0";
+        private static CubeInfo[,] _cubesInfo = new CubeInfo[4, 4];
 
-        private Random _random = new Random();
-        private Grid _playField;
+        private static string _currentScore = "0";
 
-        private ObservableCollection<Button> _playGrid { get; set; } = new ObservableCollection<Button>();
-        public ObservableCollection<Button> PlayGrid
+        private const int _ROWS_AMOUNT = 4;
+        private const int _COLUMNS_AMOUNT = 4;
+
+        private static Random _random = new Random();
+        private static Grid _playField;
+
+        #region INotifyPropertyChanged
+        public new static event PropertyChangedEventHandler PropertyChanged;
+        protected new static void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            var changed = PropertyChanged;
+            if (changed == null)
+                return;
+
+            changed.Invoke(typeof(GameViewModel), new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
+
+        private static ObservableCollection<Button> _playGrid { get; set; } = new ObservableCollection<Button>();
+        public static ObservableCollection<Button> PlayGrid
         {
             get => _playGrid;
             set => _playGrid = value;
         }
 
-        public string CurrentScore
+        public static string CurrentScore
         {
             get => _currentScore;
             set
@@ -39,38 +58,53 @@ namespace App1.ViewModels
         public ICommand GameOverCommand { get; }
         public ICommand PressButtonCommand { get; }
 
-        public GameViewModel(Grid playField)
+        public static GameViewModel Create(Grid playField)
+        {
+            if (_instance is null)
+            {
+                _instance = new GameViewModel(playField);
+                return _instance;
+            }
+            FillGrid();
+            return _instance;
+        }
+
+        private GameViewModel(Grid playField)
         {
             _playField = playField;
             FillGrid();
             GameOverCommand = new Command(OnGameOverClicked);
         }
 
-        private void FillGrid()
+        private static void FillGrid()
         {
             try
             {
+                bool check = false;
                 int randomValue = _random.Next(0, 15);
                 int counter = 0;
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < _ROWS_AMOUNT; i++)
                 {
-                    for (int j = 0; j < 4; j++)
+                    for (int j = 0; j < _COLUMNS_AMOUNT; j++)
                     {
                         _cubesInfo[i, j] = new CubeInfo();
 
-                        if (counter == randomValue)
-                        {
-                            counter++;
-                            continue;
-                        }
                         Button newCube = new Button();
-                        newCube.Text = (++counter).ToString();
-                        newCube.FontSize = 35;
-                        newCube.TextColor = Color.Black;
-                        newCube.Clicked += ShiftCube;
 
-                        _cubesInfo[i, j].Text = newCube.Text;
+                        if (counter == randomValue && !check)
+                        {
+                            check = true;
+                            newCube.BackgroundColor = Color.Transparent;
+                        }
+                        else
+                        {
+                            newCube.Text = (++counter).ToString();
+                            newCube.FontSize = 35;
+                            newCube.TextColor = Color.Black;
+                            newCube.Clicked += ShiftCube;
 
+                            _cubesInfo[i, j].Text = newCube.Text;
+                        }
                         _playGrid.Add(newCube);
                     }
                 }
@@ -84,23 +118,23 @@ namespace App1.ViewModels
             }
         }
 
-        private void AddCubesToGrid()
+        private static void AddCubesToGrid()
         {
             try
             {
                 int counter = 0;
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < _ROWS_AMOUNT; i++)
                 {
-                    for (int j = 0; j < 4; j++)
+                    for (int j = 0; j < _COLUMNS_AMOUNT; j++)
                     {
-                        if (string.IsNullOrWhiteSpace(_cubesInfo[i, j].Text))
-                        {
-                            continue;
-                        }
-                        _cubesInfo[i, j].IsFree = false;
                         _cubesInfo[i, j].Y = i;
                         _cubesInfo[i, j].X = j;
-                        _playField.Children.Add(_playGrid[counter++], i, j);
+
+                        if (!string.IsNullOrWhiteSpace(_cubesInfo[i, j].Text))
+                        {
+                            _cubesInfo[i, j].IsFree = false;
+                        }
+                        _playField.Children.Add(_playGrid[counter++], j, i);
                     }
                 }
             }
@@ -110,22 +144,18 @@ namespace App1.ViewModels
             }
         }
 
-        private void RefreshCubes()
+        private static void RefreshCubes()
         {
             try
             {
                 _playField.Children.Clear();
 
                 int counter = 0;
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < _ROWS_AMOUNT; i++)
                 {
-                    for (int j = 0; j < 4; j++)
+                    for (int j = 0; j < _COLUMNS_AMOUNT; j++)
                     {
-                        if (string.IsNullOrWhiteSpace(_cubesInfo[i, j].Text))
-                        {
-                            continue;
-                        }
-                        _playField.Children.Add(_playGrid[counter++], i, j);
+                        _playField.Children.Add(_playGrid[counter++], j, i);
                     }
                 }
             }
@@ -135,7 +165,7 @@ namespace App1.ViewModels
             }
         }
 
-        private void MixCollection(ObservableCollection<Button> collection)
+        private static void MixCollection(ObservableCollection<Button> collection)
         {
             try
             {
@@ -146,6 +176,10 @@ namespace App1.ViewModels
                     var temp = collection[j];
                     collection[j] = collection[i];
                     collection[i] = temp;
+
+                    var tempInfo = _cubesInfo[j / _COLUMNS_AMOUNT, j % _COLUMNS_AMOUNT];
+                    _cubesInfo[j / _COLUMNS_AMOUNT, j % _COLUMNS_AMOUNT] = _cubesInfo[i / _COLUMNS_AMOUNT, i % _COLUMNS_AMOUNT];
+                    _cubesInfo[i / _COLUMNS_AMOUNT, i % _COLUMNS_AMOUNT] = tempInfo;
                 }
             }
             catch (Exception ex)
@@ -154,16 +188,16 @@ namespace App1.ViewModels
             }
         }
 
-        private void ShiftCube(object sender, EventArgs e)
+        private static void ShiftCube(object sender, EventArgs e)
         {
             try
             {
                 // explicit cast from RoutedEventArgs to Button
                 Button button = (Button)sender;
 
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < _ROWS_AMOUNT; i++)
                 {
-                    for (int j = 0; j < 4; j++)
+                    for (int j = 0; j < _COLUMNS_AMOUNT; j++)
                     {
                         if (_cubesInfo[i, j].Text == button.Text)
                         {
@@ -173,37 +207,37 @@ namespace App1.ViewModels
                                 {
                                     if (_cubesInfo[i, j + 1].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j + 1], (i, j));
+                                        WrapCubes(_cubesInfo[i, j + 1], (i, j), (i, j + 1));
                                     }
                                     else if (_cubesInfo[i + 1, j].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i + 1, j], (i, j));
+                                        WrapCubes(_cubesInfo[i + 1, j], (i, j), (i + 1, j));
                                     }
                                 }
                                 else if (j == 3)
                                 {
                                     if (_cubesInfo[i, j - 1].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j - 1], (i, j));
+                                        WrapCubes(_cubesInfo[i, j - 1], (i, j), (i, j - 1));
                                     }
                                     else if (_cubesInfo[i + 1, j].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i + 1, j], (i, j));
+                                        WrapCubes(_cubesInfo[i + 1, j], (i, j), (i + 1, j));
                                     }
                                 }
                                 else
                                 {
                                     if (_cubesInfo[i + 1, j].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i + 1, j], (i, j));
+                                        WrapCubes(_cubesInfo[i + 1, j], (i, j), (i + 1, j));
                                     }
                                     else if (_cubesInfo[i, j + 1].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j + 1], (i, j));
+                                        WrapCubes(_cubesInfo[i, j + 1], (i, j), (i, j + 1));
                                     }
                                     else if (_cubesInfo[i, j - 1].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j - 1], (i, j));
+                                        WrapCubes(_cubesInfo[i, j - 1], (i, j), (i, j - 1));
                                     }
                                 }
                             }
@@ -213,37 +247,37 @@ namespace App1.ViewModels
                                 {
                                     if (_cubesInfo[i, j + 1].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j + 1], (i, j));
+                                        WrapCubes(_cubesInfo[i, j + 1], (i, j), (i, j + 1));
                                     }
                                     else if (_cubesInfo[i - 1, j].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i - 1, j], (i, j));
+                                        WrapCubes(_cubesInfo[i - 1, j], (i, j), (i - 1, j));
                                     }
                                 }
                                 else if (j == 3)
                                 {
                                     if (_cubesInfo[i, j - 1].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j - 1], (i, j));
+                                        WrapCubes(_cubesInfo[i, j - 1], (i, j), (i, j - 1));
                                     }
                                     else if (_cubesInfo[i - 1, j].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i - 1, j], (i, j));
+                                        WrapCubes(_cubesInfo[i - 1, j], (i, j), (i - 1, j));
                                     }
                                 }
                                 else
                                 {
                                     if (_cubesInfo[i - 1, j].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i - 1, j], (i, j));
+                                        WrapCubes(_cubesInfo[i - 1, j], (i, j), (i - 1, j));
                                     }
                                     else if (_cubesInfo[i, j + 1].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j + 1], (i, j));
+                                        WrapCubes(_cubesInfo[i, j + 1], (i, j), (i, j + 1));
                                     }
                                     else if (_cubesInfo[i, j - 1].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j - 1], (i, j));
+                                        WrapCubes(_cubesInfo[i, j - 1], (i, j), (i, j - 1));
                                     }
                                 }
                             }
@@ -253,37 +287,37 @@ namespace App1.ViewModels
                                 {
                                     if (_cubesInfo[i, j + 1].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j + 1], (i, j));
+                                        WrapCubes(_cubesInfo[i, j + 1], (i, j), (i, j + 1));
                                     }
                                     else if (_cubesInfo[i + 1, j].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i + 1, j], (i, j));
+                                        WrapCubes(_cubesInfo[i + 1, j], (i, j), (i + 1, j));
                                     }
                                 }
                                 else if (i == 3)
                                 {
                                     if (_cubesInfo[i, j + 1].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j + 1], (i, j));
+                                        WrapCubes(_cubesInfo[i, j + 1], (i, j), (i, j + 1));
                                     }
                                     else if (_cubesInfo[i - 1, j].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i - 1, j], (i, j));
+                                        WrapCubes(_cubesInfo[i - 1, j], (i, j), (i - 1, j));
                                     }
                                 }
                                 else
                                 {
-                                    if (_cubesInfo[i, j - 1].IsFree)
+                                    if (_cubesInfo[i, j + 1].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j - 1], (i, j));
+                                        WrapCubes(_cubesInfo[i, j + 1], (i, j), (i, j + 1));
                                     }
-                                    else if (_cubesInfo[i, j - 1].IsFree)
+                                    else if (_cubesInfo[i + 1, j].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j - 1], (i, j));
+                                        WrapCubes(_cubesInfo[i + 1, j], (i, j), (i + 1, j));
                                     }
-                                    else if (_cubesInfo[i, j - 1].IsFree)
+                                    else if (_cubesInfo[i - 1, j].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j - 1], (i, j));
+                                        WrapCubes(_cubesInfo[i - 1, j], (i, j), (i - 1, j));
                                     }
                                 }
                             }
@@ -293,37 +327,37 @@ namespace App1.ViewModels
                                 {
                                     if (_cubesInfo[i, j - 1].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j - 1], (i, j));
+                                        WrapCubes(_cubesInfo[i, j - 1], (i, j), (i, j - 1));
                                     }
                                     else if (_cubesInfo[i + 1, j].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i + 1, j], (i, j));
+                                        WrapCubes(_cubesInfo[i + 1, j], (i, j), (i + 1, j));
                                     }
                                 }
                                 else if (i == 3)
                                 {
                                     if (_cubesInfo[i, j - 1].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j - 1], (i, j));
+                                        WrapCubes(_cubesInfo[i, j - 1], (i, j), (i, j - 1));
                                     }
                                     else if (_cubesInfo[i - 1, j].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i - 1, j], (i, j));
+                                        WrapCubes(_cubesInfo[i - 1, j], (i, j), (i - 1, j));
                                     }
                                 }
                                 else
                                 {
                                     if (_cubesInfo[i - 1, j].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i - 1, j], (i, j));
+                                        WrapCubes(_cubesInfo[i - 1, j], (i, j), (i - 1, j));
                                     }
                                     else if (_cubesInfo[i + 1, j].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i + 1, j], (i, j));
+                                        WrapCubes(_cubesInfo[i + 1, j], (i, j), (i + 1, j));
                                     }
                                     else if (_cubesInfo[i, j - 1].IsFree)
                                     {
-                                        WrapCubes(_cubesInfo[i, j - 1], (i, j));
+                                        WrapCubes(_cubesInfo[i, j - 1], (i, j), (i, j - 1));
                                     }
                                 }
                             }
@@ -331,21 +365,22 @@ namespace App1.ViewModels
                             {
                                 if (_cubesInfo[i - 1, j].IsFree)
                                 {
-                                    WrapCubes(_cubesInfo[i - 1, j], (i, j));
+                                    WrapCubes(_cubesInfo[i - 1, j], (i, j), (i - 1, j));
                                 }
                                 else if (_cubesInfo[i + 1, j].IsFree)
                                 {
-                                    WrapCubes(_cubesInfo[i + 1, j], (i, j));
+                                    WrapCubes(_cubesInfo[i + 1, j], (i, j), (i + 1, j));
                                 }
                                 else if (_cubesInfo[i, j - 1].IsFree)
                                 {
-                                    WrapCubes(_cubesInfo[i, j - 1], (i, j));
+                                    WrapCubes(_cubesInfo[i, j - 1], (i, j), (i, j - 1));
                                 }
                                 else if (_cubesInfo[i, j + 1].IsFree)
                                 {
-                                    WrapCubes(_cubesInfo[i, j + 1], (i, j));
+                                    WrapCubes(_cubesInfo[i, j + 1], (i, j), (i, j + 1));
                                 }
                             }
+                            return;
                         }
                     }
                 }
@@ -356,28 +391,36 @@ namespace App1.ViewModels
             }
         }
 
-        private void WrapCubes(CubeInfo to, (int, int) from)
+        private static void WrapCubes(CubeInfo to, (int, int) from, (int, int) toCoords)
         {
-            _cubesInfo[to.X, to.Y].IsFree = false;
-            _cubesInfo[from.Item1, from.Item2].IsFree = true;
-
-            // CubeInfo tempCube = _cubesInfo[from.Item1, from.Item2];
-            _cubesInfo[to.X, to.Y] = _cubesInfo[from.Item1, from.Item2];
+            _cubesInfo[toCoords.Item1, toCoords.Item2] = _cubesInfo[from.Item1, from.Item2];
             _cubesInfo[from.Item1, from.Item2] = new CubeInfo();
 
+            Button tempCube = _playGrid[_COLUMNS_AMOUNT * from.Item1 + from.Item2];
+            _playGrid.RemoveAt(_COLUMNS_AMOUNT * from.Item1 + from.Item2);
+            _playGrid.Insert(_COLUMNS_AMOUNT * toCoords.Item1 + toCoords.Item2, tempCube);
+
+            //_playField.Children.RemoveAt(_COLUMNS_AMOUNT * from.Item1 + from.Item2);
+            //_playField.Children.Insert(_COLUMNS_AMOUNT * toCoords.Item1 + toCoords.Item2, tempCube);
+
             RefreshCubes();
+
+            int previousScore = int.Parse(_currentScore);
+            CurrentScore = (++previousScore).ToString();
         }
 
         private async void OnGameOverClicked(object obj)
         {
             ResetData();
+            await Shell.Current.GoToAsync("//FirstGameMenuPage");
         }
 
         private void ResetData()
         {
-            _cubesInfo = new CubeInfo[4, 4];
+            _cubesInfo = new CubeInfo[_ROWS_AMOUNT, _COLUMNS_AMOUNT];
             _playField.Children.Clear();
             _playGrid.Clear();
+            CurrentScore = "0";
         }
 
         private void SaveResult()
