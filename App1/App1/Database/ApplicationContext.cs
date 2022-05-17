@@ -11,6 +11,7 @@ namespace App1.Database
         private string _databasePath;
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Result> Results { get; set; }
 
         public ApplicationContext(string databasePath)
         {

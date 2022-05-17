@@ -21,7 +21,7 @@
             <Label x:Name="passwordLabel" Text="Password" />
             <Entry x:Name="passwordEntry" IsPassword="True" Text="{Binding Password, Mode=TwoWay} " Margin="0, 0, 0, 10" />
 
-            <Button Text="Start game" VerticalOptions="End" Command="{Binding StartGameCommand}"/>
+            <Button Text="Login" VerticalOptions="End" Command="{Binding StartGameCommand}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

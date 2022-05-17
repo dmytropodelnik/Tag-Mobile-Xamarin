@@ -19,7 +19,25 @@
                     <FormattedString>
                         <FormattedString.Spans>
                             <Span Text="Welcome to your profile, " FontSize="Medium" />
-                            <Span Text="{Binding Username, Mode=TwoWay}" FontAttributes="Bold"/>
+                            <Span Text="{Binding Username, Mode=TwoWay}" FontAttributes="Bold" FontSize="Medium" />
+                            <Span Text="!" FontSize="Medium" />
+                        </FormattedString.Spans>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+
+            <Label x:Name="changingErrorText" Text="Incorrect filled fields" TextColor="Red"
+                   IsVisible="{Binding IsIncorrect, Mode=TwoWay}" />
+
+            <Label Margin="0 ,-70, 0, 170" x:Name="bestScoreLabel"
+                VerticalOptions="CenterAndExpand" 
+                HorizontalOptions="CenterAndExpand" >
+                <Label.FormattedText>
+                    <FormattedString>
+                        <FormattedString.Spans>
+                            <Span Text="Your best score: " FontSize="Medium" />
+                            <Span Text="{Binding BestScore, Mode=TwoWay}" FontAttributes="Bold" FontSize="Medium" />
                         </FormattedString.Spans>
                     </FormattedString>
                 </Label.FormattedText>

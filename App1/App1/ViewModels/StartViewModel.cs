@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -18,6 +19,7 @@ namespace App1.ViewModels
     public class StartViewModel : BaseViewModel
     {
         private bool _isIncorrect;
+
         private string _login;
         private string _password;
 
@@ -57,15 +59,24 @@ namespace App1.ViewModels
 
         private async void OnStartGameClicked(object obj)
         {
-            if (AuthenticateUser().Result)
+            try
             {
-                MainDataStore.Username = Login;
-                ClearEntries();
-                await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
+                if (AuthenticateUser().Result)
+                {
+                    MainDataStore.Username = Login;
+                    ClearEntries();
+                    await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
+                }
+                else
+                {
+                    ShowIncorrectDataError();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                ShowIncorrectDataError();
+                Debug.WriteLine(ex.Message);
+
+                return;
             }
         }
 
@@ -77,16 +88,26 @@ namespace App1.ViewModels
 
         private async Task<bool> AuthenticateUser()
         {
-            string dbPath = DependencyService.Get<IPath>().GetDatabasePath(App.DBFILENAME);
-            using (var context = new ApplicationContext(dbPath))
+            try
             {
-                var user = await context.Users.FirstOrDefaultAsync(u => u.Username.Equals(Login) && u.Password.Equals(Password));
-                if (user is null)
+                string dbPath = DependencyService.Get<IPath>().GetDatabasePath(App.DBFILENAME);
+                using (var context = new ApplicationContext(dbPath))
                 {
-                    return false;
+                    var user = await context.Users.FirstOrDefaultAsync(u => u.Username.Equals(Login) && u.Password.Equals(Password));
+                    if (user is null)
+                    {
+                        return false;
+                    }
+                    IsIncorrect = false;
+                    return true;
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
                 IsIncorrect = false;
-                return true;
+
+                return false;
             }
         }
 
