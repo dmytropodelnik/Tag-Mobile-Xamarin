@@ -14,7 +14,7 @@ namespace App1.ViewModels
 {
     public class GameViewModel : BaseViewModel
     {
-        private static GameViewModel _instance;
+        private static GameViewModel _instance = null;
 
         private static CubeInfo[,] _cubesInfo = new CubeInfo[4, 4];
 
@@ -34,7 +34,7 @@ namespace App1.ViewModels
             if (changed == null)
                 return;
 
-            changed.Invoke(typeof(GameViewModel), new PropertyChangedEventArgs(propertyName));
+            changed.Invoke(Create(_playField), new PropertyChangedEventArgs(propertyName));
         }
         #endregion
 
@@ -63,9 +63,11 @@ namespace App1.ViewModels
             if (_instance is null)
             {
                 _instance = new GameViewModel(playField);
-                return _instance;
             }
-            FillGrid();
+            else
+            {
+                FillGrid();
+            }
             return _instance;
         }
 

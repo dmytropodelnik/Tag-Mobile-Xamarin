@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:viewmodels="clr-namespace:App1.ViewModels" 
+             xmlns:local="clr-namespace:App1.ViewModels"
              x:DataType="viewmodels:GameViewModel"
              x:Class="App1.Views.GamePage">
     <ContentPage.Content>
@@ -13,7 +14,7 @@
                     <FormattedString>
                         <FormattedString.Spans>
                             <Span Text="Your current score: " FontSize="Medium" />
-                            <Span Text="{Binding CurrentScore, Mode=TwoWay}" FontAttributes="Bold" FontSize="Medium" />
+                            <Span Text="{x:Static local:GameViewModel.CurrentScore}" FontAttributes="Bold" FontSize="Medium" />
                         </FormattedString.Spans>
                     </FormattedString>
                 </Label.FormattedText>
