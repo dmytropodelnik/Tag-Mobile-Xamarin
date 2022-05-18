@@ -428,28 +428,37 @@ namespace App1.ViewModels
 
         private async void OnGameOverClicked(object obj)
         {
-            await SaveResult();
             ResetData();
             await Shell.Current.GoToAsync("//FirstGameMenuPage");
         }
 
         private static bool IsWin()
         {
-            int counter = 0;
-            for (int i = 0; i < _ROWS_AMOUNT; i++)
+            try
             {
-                for (int j = 0; j < _COLUMNS_AMOUNT; j++)
+                int counter = 0;
+                for (int i = 0; i < _ROWS_AMOUNT; i++)
                 {
-                    if (!string.IsNullOrWhiteSpace(_playGrid[counter++].Text))
+                    for (int j = 0; j < _COLUMNS_AMOUNT; j++, counter++)
                     {
-                        if (!_playGrid[counter++].Text.Equals(counter))
+                        if (_playGrid[counter].Text is null)
+                        {
+                            continue;
+                        }
+                        if (!_playGrid[counter].Text.Equals(counter))
                         {
                             return false;
                         }
                     }
                 }
+                return true;
             }
-            return true;
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+
+                return false;
+            }
         }
 
         private static void ResetData()
