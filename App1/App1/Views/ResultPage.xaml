@@ -10,9 +10,20 @@
 
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+            <Label Text="GAME OVER!" FontSize="Large" Margin="0 ,20, 0, 0" />
+            
+            <Label Margin="0 ,20, 0, 0" x:Name="bestScoreLabel"
+                VerticalOptions="Start" 
+                HorizontalOptions="Center" >
+                <Label.FormattedText>
+                    <FormattedString>
+                        <FormattedString.Spans>
+                            <Span Text="Your score: " FontSize="Medium" />
+                            <Span Text="{Binding ResultScore, Mode=TwoWay}" FontAttributes="Bold" FontSize="Medium" />
+                        </FormattedString.Spans>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
 
             <Button Text="Continue" VerticalOptions="End" Command="{Binding ContinueCommand}"/>
         </StackLayout>

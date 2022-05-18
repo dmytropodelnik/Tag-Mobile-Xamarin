@@ -1,5 +1,9 @@
-﻿using App1.Models;
+﻿using App1.Database;
+using App1.Interfaces;
+using App1.Models;
+using App1.Services;
 using App1.Views;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,6 +11,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -393,7 +398,7 @@ namespace App1.ViewModels
             }
         }
 
-        private static void WrapCubes(CubeInfo to, (int, int) from, (int, int) toCoords)
+        private static async void WrapCubes(CubeInfo to, (int, int) from, (int, int) toCoords)
         {
             _cubesInfo[toCoords.Item1, toCoords.Item2] = _cubesInfo[from.Item1, from.Item2];
             _cubesInfo[from.Item1, from.Item2] = new CubeInfo();
@@ -415,12 +420,15 @@ namespace App1.ViewModels
 
             if (IsWin())
             {
-
+                await SaveResult();
+                ResetData();
+                await Shell.Current.GoToAsync("//ResultPage");
             }
         }
 
         private async void OnGameOverClicked(object obj)
         {
+            await SaveResult();
             ResetData();
             await Shell.Current.GoToAsync("//FirstGameMenuPage");
         }
@@ -441,18 +449,34 @@ namespace App1.ViewModels
             return true;
         }
 
-        private void ResetData()
+        private static void ResetData()
         {
             _cubesInfo = new CubeInfo[_ROWS_AMOUNT, _COLUMNS_AMOUNT];
             _playField.Children.Clear();
             _playGrid.Clear();
+            MainDataStore.PreviousScore = CurrentScore;
             CurrentScore = "0";
             IsInitialized = false;
         }
 
-        private void SaveResult()
+        private static async Task SaveResult()
         {
+            string dbPath = DependencyService.Get<IPath>().GetDatabasePath(App.DBFILENAME);
+            using (var context = new ApplicationContext(dbPath))
+            {
+                var user = context.Users.FirstOrDefaultAsync(u => u.Username.Equals(MainDataStore.Username));
+                if (user is null)
+                {
+                    throw new NullReferenceException("User is not found!");
+                }
 
+                Result newResult = new Result();
+                newResult.Steps = int.Parse(CurrentScore);
+                newResult.UserId = user.Id;
+
+                context.Results.Add(newResult);
+                await context.SaveChangesAsync();
+            }
         }
     }
 }

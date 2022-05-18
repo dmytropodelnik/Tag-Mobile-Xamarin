@@ -1,4 +1,5 @@
-﻿using App1.ViewModels;
+﻿using App1.Services;
+using App1.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,14 @@ namespace App1.Views
         public ResultPage()
         {
             InitializeComponent();
-            this.BindingContext = new ResultViewModel();
+            this.BindingContext = ResultViewModel.Create();
+        }
+
+        protected override void OnAppearing()
+        {
+            ResultViewModel.Create().ResultScore = MainDataStore.PreviousScore;
+
+            base.OnAppearing();
         }
     }
 }
