@@ -440,7 +440,14 @@ namespace App1.ViewModels
             {
                 for (int j = 0; j < _COLUMNS_AMOUNT; j++)
                 {
-                    if (!_playGrid[counter++].Text.Equals(counter))
+                    if (!string.IsNullOrWhiteSpace(_playGrid[counter++].Text))
+                    {
+                        if (!_playGrid[counter++].Text.Equals(counter))
+                        {
+                            return false;
+                        }
+                    }
+                    else
                     {
                         return false;
                     }
