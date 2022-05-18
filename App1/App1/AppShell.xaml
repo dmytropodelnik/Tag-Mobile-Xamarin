@@ -84,6 +84,9 @@
     <FlyoutItem Title="Game" Icon="play.png" FlyoutItemIsVisible="False">
         <ShellContent Route="GamePage" ContentTemplate="{DataTemplate local:GamePage}" />
     </FlyoutItem>
+    <FlyoutItem Title="Results" Icon="play.png" FlyoutItemIsVisible="False">
+        <ShellContent Route="ResultPage" ContentTemplate="{DataTemplate local:ResultPage}" />
+    </FlyoutItem>
     <FlyoutItem Title="Profile" Icon="profile.png">
         <ShellContent Route="ProfilePage" ContentTemplate="{DataTemplate local:ProfilePage}" />
     </FlyoutItem>

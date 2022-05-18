@@ -16,6 +16,7 @@ namespace App1
             Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
             Routing.RegisterRoute(nameof(GamePage), typeof(GamePage));
             Routing.RegisterRoute(nameof(AboutPage), typeof(AboutPage));
+            Routing.RegisterRoute(nameof(ResultPage), typeof(ResultPage));
         }
 
         private async void OnMenuItemClicked(object sender, EventArgs e)

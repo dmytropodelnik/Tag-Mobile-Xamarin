@@ -408,19 +408,37 @@ namespace App1.ViewModels
             _playGrid.RemoveAt(_COLUMNS_AMOUNT * toCoords.Item1 + toCoords.Item2);
             _playGrid.Insert(_COLUMNS_AMOUNT * toCoords.Item1 + toCoords.Item2, tempCube);
 
-            //_playField.Children.RemoveAt(_COLUMNS_AMOUNT * from.Item1 + from.Item2);
-            //_playField.Children.Insert(_COLUMNS_AMOUNT * toCoords.Item1 + toCoords.Item2, tempCube);
-
             RefreshCubes();
 
             int previousScore = int.Parse(_currentScore);
             CurrentScore = (++previousScore).ToString();
+
+            if (IsWin())
+            {
+
+            }
         }
 
         private async void OnGameOverClicked(object obj)
         {
             ResetData();
             await Shell.Current.GoToAsync("//FirstGameMenuPage");
+        }
+
+        private static bool IsWin()
+        {
+            int counter = 0;
+            for (int i = 0; i < _ROWS_AMOUNT; i++)
+            {
+                for (int j = 0; j < _COLUMNS_AMOUNT; j++)
+                {
+                    if (!_playGrid[counter++].Text.Equals(counter))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
         private void ResetData()
