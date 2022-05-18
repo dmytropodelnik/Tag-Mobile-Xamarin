@@ -447,10 +447,6 @@ namespace App1.ViewModels
                             return false;
                         }
                     }
-                    else
-                    {
-                        return false;
-                    }
                 }
             }
             return true;
