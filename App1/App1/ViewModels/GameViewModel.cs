@@ -20,6 +20,8 @@ namespace App1.ViewModels
 
         private static string _currentScore = "0";
 
+        public static bool IsInitialized = false;
+
         private const int _ROWS_AMOUNT = 4;
         private const int _COLUMNS_AMOUNT = 4;
 
@@ -64,10 +66,6 @@ namespace App1.ViewModels
             {
                 _instance = new GameViewModel(playField);
             }
-            else
-            {
-                FillGrid();
-            }
             return _instance;
         }
 
@@ -75,10 +73,11 @@ namespace App1.ViewModels
         {
             _playField = playField;
             FillGrid();
+            IsInitialized = true;
             GameOverCommand = new Command(OnGameOverClicked);
         }
 
-        private static void FillGrid()
+        public static void FillGrid()
         {
             try
             {
@@ -179,9 +178,10 @@ namespace App1.ViewModels
                     collection[j] = collection[i];
                     collection[i] = temp;
 
-                    var tempInfo = _cubesInfo[j / _COLUMNS_AMOUNT, j % _COLUMNS_AMOUNT];
+                    CubeInfo tempInfo = _cubesInfo[j / _COLUMNS_AMOUNT, j % _COLUMNS_AMOUNT];
+                    CubeInfo cube = new CubeInfo(tempInfo.Text, tempInfo.X, tempInfo.Y, tempInfo.IsFree);
                     _cubesInfo[j / _COLUMNS_AMOUNT, j % _COLUMNS_AMOUNT] = _cubesInfo[i / _COLUMNS_AMOUNT, i % _COLUMNS_AMOUNT];
-                    _cubesInfo[i / _COLUMNS_AMOUNT, i % _COLUMNS_AMOUNT] = tempInfo;
+                    _cubesInfo[i / _COLUMNS_AMOUNT, i % _COLUMNS_AMOUNT] = cube;
                 }
             }
             catch (Exception ex)
@@ -398,8 +398,14 @@ namespace App1.ViewModels
             _cubesInfo[toCoords.Item1, toCoords.Item2] = _cubesInfo[from.Item1, from.Item2];
             _cubesInfo[from.Item1, from.Item2] = new CubeInfo();
 
+            Button newCube = new Button();
+            newCube.BackgroundColor = Color.Transparent;
+
             Button tempCube = _playGrid[_COLUMNS_AMOUNT * from.Item1 + from.Item2];
+
             _playGrid.RemoveAt(_COLUMNS_AMOUNT * from.Item1 + from.Item2);
+            _playGrid.Insert(_COLUMNS_AMOUNT * from.Item1 + from.Item2, newCube);
+            _playGrid.RemoveAt(_COLUMNS_AMOUNT * toCoords.Item1 + toCoords.Item2);
             _playGrid.Insert(_COLUMNS_AMOUNT * toCoords.Item1 + toCoords.Item2, tempCube);
 
             //_playField.Children.RemoveAt(_COLUMNS_AMOUNT * from.Item1 + from.Item2);
@@ -423,6 +429,7 @@ namespace App1.ViewModels
             _playField.Children.Clear();
             _playGrid.Clear();
             CurrentScore = "0";
+            IsInitialized = false;
         }
 
         private void SaveResult()

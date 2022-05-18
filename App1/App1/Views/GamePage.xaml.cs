@@ -21,7 +21,11 @@ namespace App1.Views
 
         protected override void OnAppearing()
         {
-            GameViewModel.Create(playField);
+            //GameViewModel.Create(playField);
+            if (!GameViewModel.IsInitialized)
+            {
+                GameViewModel.FillGrid();
+            }
 
             base.OnAppearing();
         }
