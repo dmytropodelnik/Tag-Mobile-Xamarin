@@ -25,10 +25,6 @@
                 </Label.FormattedText>
             </Label>
 
-
-            <Label x:Name="changingErrorText" Text="Incorrect filled fields" TextColor="Red"
-                   IsVisible="{Binding IsIncorrect, Mode=TwoWay}" />
-
             <Label Margin="0 ,-70, 0, 170" x:Name="bestScoreLabel"
                 VerticalOptions="CenterAndExpand" 
                 HorizontalOptions="CenterAndExpand" >
@@ -41,6 +37,9 @@
                     </FormattedString>
                 </Label.FormattedText>
             </Label>
+            
+            <Label x:Name="changingErrorText" Text="Incorrect filled fields" TextColor="Red"
+                   IsVisible="{Binding IsIncorrect, Mode=TwoWay}" Margin="0 ,-70, 0, 20" />
 
             <Label x:Name="changeLoginLabel" Text="New login" />
             <Entry x:Name="changeLogin" Text="{Binding NewLogin, Mode=TwoWay}" />
