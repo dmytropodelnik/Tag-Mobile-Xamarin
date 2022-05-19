@@ -14,7 +14,7 @@
                     <FormattedString>
                         <FormattedString.Spans>
                             <Span Text="Your current score: " FontSize="Medium" />
-                            <Span Text="{x:Static local:GameViewModel.CurrentScore}" FontAttributes="Bold" FontSize="Medium" />
+                            <Span Text="{Binding CurrentScore, Mode=TwoWay}" FontAttributes="Bold" FontSize="Medium" />
                         </FormattedString.Spans>
                     </FormattedString>
                 </Label.FormattedText>

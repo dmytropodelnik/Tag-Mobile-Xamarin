@@ -23,7 +23,7 @@ namespace App1.Views
         {
             if (!GameViewModel.IsInitialized)
             {
-                GameViewModel.FillGrid();
+                GameViewModel.Create(playField).FillGrid();
             }
 
             base.OnAppearing();

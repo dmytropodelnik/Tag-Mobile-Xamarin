@@ -23,7 +23,7 @@ namespace App1.ViewModels
 
         private static CubeInfo[,] _cubesInfo = new CubeInfo[4, 4];
 
-        private static string _currentScore = "0";
+        private string _currentScore = "0";
 
         public static bool IsInitialized = false;
 
@@ -33,18 +33,6 @@ namespace App1.ViewModels
         private static Random _random = new Random();
         private static Grid _playField;
 
-        #region INotifyPropertyChanged
-        public new static event PropertyChangedEventHandler PropertyChanged;
-        protected new static void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            var changed = PropertyChanged;
-            if (changed == null)
-                return;
-
-            changed.Invoke(Create(_playField), new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
-
         private static ObservableCollection<Button> _playGrid { get; set; } = new ObservableCollection<Button>();
         public static ObservableCollection<Button> PlayGrid
         {
@@ -52,7 +40,7 @@ namespace App1.ViewModels
             set => _playGrid = value;
         }
 
-        public static string CurrentScore
+        public string CurrentScore
         {
             get => _currentScore;
             set
@@ -82,7 +70,7 @@ namespace App1.ViewModels
             GameOverCommand = new Command(OnGameOverClicked);
         }
 
-        public static void FillGrid()
+        public void FillGrid()
         {
             try
             {
@@ -124,7 +112,7 @@ namespace App1.ViewModels
             }
         }
 
-        private static void AddCubesToGrid()
+        private void AddCubesToGrid()
         {
             try
             {
@@ -171,7 +159,7 @@ namespace App1.ViewModels
             }
         }
 
-        private static void MixCollection(ObservableCollection<Button> collection)
+        private void MixCollection(ObservableCollection<Button> collection)
         {
             try
             {
@@ -195,7 +183,7 @@ namespace App1.ViewModels
             }
         }
 
-        private static void ShiftCube(object sender, EventArgs e)
+        private void ShiftCube(object sender, EventArgs e)
         {
             try
             {
@@ -398,7 +386,7 @@ namespace App1.ViewModels
             }
         }
 
-        private static async void WrapCubes(CubeInfo to, (int, int) from, (int, int) toCoords)
+        private async void WrapCubes(CubeInfo to, (int, int) from, (int, int) toCoords)
         {
             _cubesInfo[toCoords.Item1, toCoords.Item2] = _cubesInfo[from.Item1, from.Item2];
             _cubesInfo[from.Item1, from.Item2] = new CubeInfo();
@@ -415,7 +403,7 @@ namespace App1.ViewModels
 
             RefreshCubes();
 
-            int previousScore = int.Parse(_currentScore);
+            int previousScore = int.Parse(CurrentScore);
             CurrentScore = (++previousScore).ToString();
 
             if (IsWin())
@@ -432,7 +420,7 @@ namespace App1.ViewModels
             await Shell.Current.GoToAsync("//FirstGameMenuPage");
         }
 
-        private static bool IsWin()
+        private bool IsWin()
         {
             try
             {
@@ -445,7 +433,7 @@ namespace App1.ViewModels
                         {
                             continue;
                         }
-                        if (!_playGrid[counter].Text.Equals(counter + 1))
+                        if (!_playGrid[counter].Text.Equals((counter + 1).ToString()))
                         {
                             return false;
                         }
@@ -461,7 +449,7 @@ namespace App1.ViewModels
             }
         }
 
-        private static void ResetData()
+        private void ResetData()
         {
             _cubesInfo = new CubeInfo[_ROWS_AMOUNT, _COLUMNS_AMOUNT];
             _playField.Children.Clear();
@@ -469,14 +457,15 @@ namespace App1.ViewModels
             MainDataStore.PreviousScore = CurrentScore;
             CurrentScore = "0";
             IsInitialized = false;
+
         }
 
-        private static async Task SaveResult()
+        private async Task SaveResult()
         {
             string dbPath = DependencyService.Get<IPath>().GetDatabasePath(App.DBFILENAME);
             using (var context = new ApplicationContext(dbPath))
             {
-                var user = context.Users.FirstOrDefaultAsync(u => u.Username.Equals(MainDataStore.Username));
+                var user = await context.Users.FirstOrDefaultAsync(u => u.Username.Equals(MainDataStore.Username));
                 if (user is null)
                 {
                     throw new NullReferenceException("User is not found!");

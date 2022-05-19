@@ -1,19 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:App1.ViewModels"
              x:Class="App1.Views.ResultPage">
-    
-    <ContentPage.BindingContext>
-        <vm:ResultViewModel />
-    </ContentPage.BindingContext>
 
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="GAME OVER!" FontSize="Large" Margin="0 ,20, 0, 0" />
+        <StackLayout VerticalOptions="Start" Padding="0, 20, 0, 0" WidthRequest="300" >
+            <Label Text="GAME OVER!" FontSize="Large" Margin="0, 200, 0, 0" HorizontalOptions="Center" />
             
-            <Label Margin="0 ,20, 0, 0" x:Name="bestScoreLabel"
-                VerticalOptions="Start" 
+            <Label Margin="0, 20, 0, 0" x:Name="bestScoreLabel"
                 HorizontalOptions="Center" >
                 <Label.FormattedText>
                     <FormattedString>
@@ -25,7 +19,10 @@
                 </Label.FormattedText>
             </Label>
 
-            <Button Text="Continue" VerticalOptions="End" Command="{Binding ContinueCommand}"/>
+            <Label Text="You can do this better! " FontSize="Medium" HorizontalOptions="Center" />
+            <Label Text="Let's again?" FontSize="Medium" HorizontalOptions="Center" />
+
+            <Button Text="Continue" Margin="0, 200, 0, 0" Command="{Binding ContinueCommand}"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
