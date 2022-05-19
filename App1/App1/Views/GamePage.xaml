@@ -7,7 +7,7 @@
              x:Class="App1.Views.GamePage">
     <ContentPage.Content>
         <StackLayout HorizontalOptions="Center">
-            <Label Margin="0 ,20, 0, 0" x:Name="bestScoreLabel"
+            <Label Margin="0, 30, 0, 0" x:Name="bestScoreLabel"
                 VerticalOptions="Start" 
                 HorizontalOptions="Center" >
                 <Label.FormattedText>
@@ -23,9 +23,7 @@
 
 
             <Grid x:Name="playField" 
-                  VerticalOptions="FillAndExpand"
-                  HorizontalOptions="FillAndExpand"
-                  Margin="0, 150, 0, 150">
+                  Margin="0, 150, 0, 140">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="65" />
                     <RowDefinition Height="65" />
@@ -41,7 +39,7 @@
                 </Grid.ColumnDefinitions>
             </Grid>
 
-            <Button Text="Finish" VerticalOptions="End" Command="{Binding GameOverCommand}" Margin="0, -50, 0, 0"/>
+            <Button Text="Finish" Command="{Binding GameOverCommand}" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

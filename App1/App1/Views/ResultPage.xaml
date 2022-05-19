@@ -4,7 +4,7 @@
              x:Class="App1.Views.ResultPage">
 
     <ContentPage.Content>
-        <StackLayout VerticalOptions="Start" Padding="0, 20, 0, 0" WidthRequest="300" >
+        <StackLayout Padding="0, 20, 0, 0" WidthRequest="300" >
             <Label Text="GAME OVER!" FontSize="Large" Margin="0, 200, 0, 0" HorizontalOptions="Center" />
             
             <Label Margin="0, 20, 0, 0" x:Name="bestScoreLabel"
