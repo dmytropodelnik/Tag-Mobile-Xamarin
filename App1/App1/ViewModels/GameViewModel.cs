@@ -445,7 +445,7 @@ namespace App1.ViewModels
                         {
                             continue;
                         }
-                        if (!_playGrid[counter].Text.Equals(counter))
+                        if (!_playGrid[counter].Text.Equals(counter + 1))
                         {
                             return false;
                         }
