@@ -38,7 +38,7 @@
                                 <Span Text="Learn more at
                                       
                                       "/>
-                                <Span Text="https://github.com/dmytropodelnik/Xamarin" FontAttributes="Bold"/>
+                                <Span Text="https://github.com/dmytropodelnik/Tag-Mobile-Xamarin" FontAttributes="Bold"/>
                             </FormattedString.Spans>
                         </FormattedString>
                     </Label.FormattedText>
